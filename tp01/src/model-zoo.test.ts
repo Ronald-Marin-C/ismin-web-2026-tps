@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 import type { Model } from "./model.js";
-import { ModelZoo } from "./model-zoo.js";
+import { ModelZoo } from "./model-zoo";
 
 /**
  * These tests are the assignment: they describe the expected behaviour.
