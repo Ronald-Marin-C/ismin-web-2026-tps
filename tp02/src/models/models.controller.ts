@@ -1,5 +1,7 @@
-import { Controller } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, NotFoundException, Param, Post } from '@nestjs/common';
 import { ModelsService } from './models.service.js';
+import type { Model } from './model.js';
+import { NotFoundError } from 'rxjs';
 
 /**
  * The controller: it translates HTTP ↔ domain. No business logic here.
@@ -15,7 +17,41 @@ import { ModelsService } from './models.service.js';
  */
 @Controller('models')
 export class ModelsController {
+  
   constructor(private readonly modelsService: ModelsService) {}
 
-  // 👉 Your turn.
+
+  @Get()
+    findAll(): Model[] {
+      return this.modelsService.findAll();}
+  
+  @Get(':id')
+  findOne(@Param('id') id: string): Model {
+    // Nota: Corregí "finOne" a "findOne" asumiendo que fue un error de tipeo en tu código original.
+    const model = this.modelsService.findOne(id); 
+    
+    // Si el modelo no existe, lanzamos el error 404
+    if (!model) {
+      throw new NotFoundException(`Model with id ${id} not found`);
+    }
+    
+    return model; 
+  }
+    
+  @Post()
+  @HttpCode(201)
+  create(@Body() model: Model): Model{
+    return this.modelsService.create(model)
+  }
+
+  @Delete(':id')
+  @HttpCode(204)
+  remove(@Param('id') id: string): void {
+    const wasRemoved = this.modelsService.remove(id);
+    
+    if (!wasRemoved) {
+      throw new NotFoundException(`Model with id ${id} not found`);
+    }
+    
+  }
 }
