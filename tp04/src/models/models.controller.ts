@@ -26,11 +26,9 @@ import { ModelsService } from './models.service.js';
 export class ModelsController {
   constructor(private readonly modelsService: ModelsService) {}
 
-
   @Get()
   findAll(@Query('org') org?: string, @Query('task') task?: Task): Promise<Model[]> {
-    return this.modelsService.findAll(org, task );
-
+    return this.modelsService.findAll({ org, task });
   }
 
   @Get(':id')
