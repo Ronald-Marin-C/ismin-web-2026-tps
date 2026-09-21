@@ -1,6 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
-import { Model, Task } from './model.js';
+import type { Model, Task } from './model.js';
+import { ModelModel as DBModel} from '../generated/prisma/models.js';
 
 /**
  * The service, to be moved from memory to the database.
@@ -28,25 +29,72 @@ import { Model, Task } from './model.js';
 export class ModelsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(model: Model): Promise<Model> {
-    throw new Error('create is not implemented yet');
+  private toModel(dbModel : DBModel): Model{     
+    return {
+      ...dbModel,
+      task: dbModel.task as Task,
+      license: dbModel.license ?? undefined
+    }
   }
 
-  async findAll(filters: { org?: string; task?: Task } = {}): Promise<Model[]> {
-    throw new Error('findAll is not implemented yet');
+  private toDbModel(model: Model): DBModel {
+    return{
+      ...model,
+      license: model.license ?? null
+    }
+  }
+
+  async create(model: Model): Promise<Model> {
+    const create = await this.prisma.model.create({
+      data: this.toDbModel(model)});
+    return this.toModel(create)
+  }
+
+  async findAll(org: string | undefined, task: string | undefined, filters: { org?: string; task?: Task; } = {}): Promise<Model[]> {
+    const models = await this.prisma.model.findMany({
+      where: {
+      ...(org? { org } : {}),
+      ...(task? { task } : {}),
+      }
+    });
+
+    return models.map(model => this.toModel(model));
   }
 
   async findOne(id: string): Promise<Model | null> {
-    throw new Error('findOne is not implemented yet');
+    
+ 
+    const model = await this.prisma.model.findUnique(
+      {
+        where: {id},
+      });
+    
+    if(!model)
+    {
+      throw new NotFoundException;
+
+    }
+    return this.toModel(model);
   }
 
   /** Returns `true` if the model existed, `false` otherwise. */
   async remove(id: string): Promise<boolean> {
-    throw new Error('remove is not implemented yet');
+  
+    try{
+      await this.prisma.model.delete({
+        where : {id},
+      });
+    return true
+    } 
+    catch{
+      throw new NotFoundException();
+    }
   }
 
   /** Given: used by the tests to start from an empty database. */
   async clear(): Promise<void> {
     await this.prisma.model.deleteMany();
   }
+
+  
 }
