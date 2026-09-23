@@ -9,10 +9,12 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { CreateModelDto } from './dto/create-model.dto.js';
 import { ModelAlreadyExists, type Model, type Task } from './model.js';
 import { ModelsService } from './models.service.js';
+import { AuthGuard } from '../auth/auth.guard.js';
 
 /**
  * Given, and this is the thing to notice: compared to TP2, this file has
@@ -42,6 +44,7 @@ export class ModelsController {
   }
 
   @Post()
+  @UseGuards(AuthGuard)
   async create(@Body() dto: CreateModelDto): Promise<Model> {
     try {
       return await this.modelsService.create(dto as Model);
@@ -53,6 +56,7 @@ export class ModelsController {
 
   @Delete(':id')
   @HttpCode(204)
+  @UseGuards(AuthGuard)
   async remove(@Param('id') id: string): Promise<void> {
     if (!(await this.modelsService.remove(id))) {
       throw new NotFoundException(`Model ${id} not found`);
