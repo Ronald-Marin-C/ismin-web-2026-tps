@@ -5,7 +5,7 @@ import { execSync } from 'node:child_process';
  * touch `dev.db`. Before the suite, the migrations are applied to it.
  */
 export default function setup(): void {
-  execSync('npx prisma migrate deploy', {
+  execSync('npx prisma migrate reset --force --skip-seed', {
     stdio: 'inherit',
     env: { ...process.env, DATABASE_URL: 'file:./test.db' },
   });
