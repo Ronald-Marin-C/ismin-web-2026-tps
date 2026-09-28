@@ -815,7 +815,8 @@ it('refuses a country that is not a two-letter code', async () => {
 
 ```ts
 // test/global-setup.ts : chaque exécution repart d’une base vide
-execSync('npx prisma migrate reset --force --skip-seed', { /* … */ });
+rmSync('test.db', { force: true });
+execSync('npx prisma migrate deploy', { /* … */ });
 ```
 
 <div class="text-sm pt-2">
