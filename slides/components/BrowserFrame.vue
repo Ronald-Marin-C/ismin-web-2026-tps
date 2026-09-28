@@ -6,12 +6,17 @@
  *     <ul><li>Mistral 7B</li></ul>
  *   </BrowserFrame>
  *
+ * Pour une capture d'écran, `flush` retire la marge : l'image touche les bords.
+ *
+ *   <BrowserFrame flush><img src="/medias/capture.png" /></BrowserFrame>
+ *
  * Le contenu est rendu avec les styles par défaut d'un navigateur, sans CSS :
  * police à empattements, puces rondes. Pour un titre ou un paragraphe, des
  * <div> avec un style en ligne : le thème des slides restylerait <h1> et <p>.
  */
-withDefaults(defineProps<{ url?: string }>(), {
+withDefaults(defineProps<{ url?: string, flush?: boolean }>(), {
   url: 'localhost:5173',
+  flush: false,
 })
 </script>
 
@@ -23,7 +28,7 @@ withDefaults(defineProps<{ url?: string }>(), {
       <span class="dot green" />
       <span class="url">{{ url }}</span>
     </div>
-    <div class="page">
+    <div class="page" :class="{ flush }">
       <slot />
     </div>
   </div>
@@ -67,6 +72,11 @@ withDefaults(defineProps<{ url?: string }>(), {
   font-family: 'Times New Roman', serif;
   font-size: 16px;
   line-height: 1.4;
+}
+
+.page.flush {
+  padding: 0;
+  line-height: 0;
 }
 
 .page :deep(ul) {

@@ -32,6 +32,40 @@ mdc: true
 </div>
 
 ---
+
+# Le but de la journée
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+<BrowserFrame flush>
+<img src="/medias/s07-modelzoo.png" alt="Le catalogue ModelZoo filtré sur la génération de texte" class="block w-full" />
+</BrowserFrame>
+
+</div>
+<div class="col-span-2 text-sm">
+
+**Le catalogue ModelZoo, dans le navigateur**, avec les vraies données de votre API, filtré par tâche.
+
+<div class="pt-4">
+
+Au départ, une maquette statique&nbsp;: trois cartes écrites à la main.
+
+À la fin, vous aurez écrit&nbsp;:
+
+- les **composants**&nbsp;: la carte, la liste, le filtre&nbsp;;
+- l’**état**&nbsp;: la tâche choisie&nbsp;;
+- l’**appel à l’API**, avec son chargement et ses erreurs.
+
+</div>
+
+<div class="pt-4 op-75">
+Le CSS est fourni&nbsp;: vous n’écrivez pas une ligne de style.
+</div>
+</div>
+</div>
+
+---
 layout: section
 ---
 
@@ -208,9 +242,15 @@ Le reste du temps, vous ne touchez plus au DOM&nbsp;: vous décrivez l’écran,
 
 **Le vocabulaire de la séance**
 
-**Un rendu**&nbsp;: un appel de votre fonction, qui décrit l’écran.
+**L’état**, *state*&nbsp;: les données qui changent.
 
-**Le montage**&nbsp;: le tout premier rendu, quand le composant apparaît.
+**Un rendu**, *render*&nbsp;: un appel de votre fonction, qui décrit l’écran.
+
+**Le montage**, *mount*&nbsp;: le tout premier rendu, quand le composant apparaît.
+
+<div class="pt-2 text-xs op-75">
+La doc de React et les messages d’erreur sont en anglais&nbsp;: <i>Too many re-renders</i>, c’est «&nbsp;trop de rendus&nbsp;».
+</div>
 
 </div>
 
@@ -289,7 +329,14 @@ const header = (
 
 - `className`, pas `class`&nbsp;: `class` est un mot réservé de TypeScript.
 - Entre accolades, **n’importe quelle expression**&nbsp;: une variable, un calcul, un appel.
-- **Un seul élément racine**, ou un fragment vide `<>` autour.
+- **Un seul élément racine.** Pour renvoyer deux éléments côte à côte, un fragment les enveloppe&nbsp;:
+
+```tsx
+<>
+  <h1>ModelZoo</h1>
+  <p>17 modèles</p>
+</>
+```
 - Toute balise se ferme&nbsp;: `<input />`, `<br />`.
 - Les attributs s’écrivent en camelCase&nbsp;: `onClick`, `htmlFor`.
 - Un commentaire&nbsp;: `{/* … */}`.
@@ -671,7 +718,7 @@ L’état <b>descend</b> par les props. Les choix <b>remontent</b> par une fonct
 layout: section
 ---
 
-# 2. `useEffect`, `fetch` et CORS
+# 2. `fetch`, `useEffect` et CORS
 
 ---
 
@@ -709,6 +756,49 @@ L’arbre de vos composants, avec leurs props et leur état, en direct.
 
 <div class="pt-6 text-sm op-75">
 Ouvrez-les avant de lancer le TP&nbsp;: F12, ou clic droit sur la page, puis «&nbsp;Inspecter&nbsp;».
+</div>
+
+---
+
+# `fetch`, ce qu’il faut savoir
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```ts
+// Un exemple sur une autre route de l’API
+async function fetchOrganisations() {
+  const res = await fetch(`${API_URL}/organisations`);
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return (await res.json()) as Organisation[];
+}
+```
+
+<div class="pt-2 text-xs op-75">
+<code>await</code> attend la promesse&nbsp;: c’est un <code>.then</code> écrit autrement. Une fonction <code>async</code> renvoie toujours une promesse.
+</div>
+
+<div class="pt-3 text-sm">
+À l’étape 5, vous écrivez la même pour les modèles&nbsp;: <code>fetchModels(task?)</code>. Reste à savoir <b>où l’appeler</b>.
+</div>
+
+</div>
+<div class="col-span-2 text-sm">
+
+<div class="p-4 bg-blue-500 bg-opacity-10 rounded">
+
+**`fetch` ne lève pas d’erreur sur un 404 ou un 500.** Seulement si le réseau échoue. Le code HTTP, c’est à vous de le lire&nbsp;: `res.ok`.
+
+</div>
+
+<div class="pt-4">
+
+**`as Organisation[]`** est une promesse faite au compilateur, pas une vérification. Si l’API renvoie autre chose, TypeScript ne le saura jamais.
+
+</div>
+</div>
 </div>
 
 ---
@@ -846,45 +936,6 @@ useEffect(() => {
 Deux <code>GET /models</code> dans l’onglet Réseau au chargement&nbsp;: c’est normal.
 </div>
 
-</div>
-</div>
-
----
-
-# `fetch`, ce qu’il faut savoir
-
-<div class="grid grid-cols-5 gap-6 pt-2">
-<div class="col-span-3">
-
-```ts
-// Un exemple sur une autre route de l’API
-async function fetchOrganisations() {
-  const res = await fetch(`${API_URL}/organisations`);
-  if (!res.ok) {
-    throw new Error(`HTTP ${res.status}`);
-  }
-  return (await res.json()) as Organisation[];
-}
-```
-
-<div class="pt-2 text-xs op-75">
-<code>await</code> attend la promesse&nbsp;: c’est un <code>.then</code> écrit autrement. Une fonction <code>async</code> renvoie toujours une promesse.
-</div>
-
-</div>
-<div class="col-span-2 text-sm">
-
-<div class="p-4 bg-blue-500 bg-opacity-10 rounded">
-
-**`fetch` ne lève pas d’erreur sur un 404 ou un 500.** Seulement si le réseau échoue. Le code HTTP, c’est à vous de le lire&nbsp;: `res.ok`.
-
-</div>
-
-<div class="pt-4">
-
-**`as Organisation[]`** est une promesse faite au compilateur, pas une vérification. Si l’API renvoie autre chose, TypeScript ne le saura jamais.
-
-</div>
 </div>
 </div>
 
@@ -1159,39 +1210,6 @@ App                  ← l’état : la tâche choisie
 
 <div class="pt-4 text-sm op-75">
 Fini&nbsp;? <b>Étapes 10 à 12&nbsp;: la même chose avec TanStack Query</b>, dans le README. Puis les bonus. 🖐 Bloqué&nbsp;? Levez la main.
-</div>
-
----
-
-# 🤖 L’IA dans ce TP
-
-<div class="grid grid-cols-2 gap-6 pt-2 text-sm">
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
-
-**Le découpage**
-
-Donnez la maquette à votre assistant et demandez-lui les composants. Comparez avec votre découpage&nbsp;: où coupe-t-il, quelles props choisit-il, où met-il l’état&nbsp;?
-
-<div class="pt-2 op-75">
-Découpe-t-il comme un ingénieur front, ou en morceaux arbitraires&nbsp;?
-</div>
-
-</div>
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
-
-**L’erreur CORS**
-
-Collez-lui le message de la console. Triez ses propositions en deux colonnes&nbsp;: **la vraie correction**, côté serveur, et **les pansements**.
-
-<div class="pt-2 op-75">
-Combien de pansements avant la bonne réponse&nbsp;?
-</div>
-
-</div>
-</div>
-
-<div class="pt-6 text-sm op-75">
-⚠️ Règle d’or&nbsp;: tout code que vous ne savez pas expliquer, je le supprime.
 </div>
 
 ---
