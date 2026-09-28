@@ -195,14 +195,21 @@ layout: center
 class: text-center
 ---
 
-<img src="/medias/pangram.svg" alt="Pangram" class="h-24 mx-auto" />
-
-<div class="pt-10 text-3xl font-bold">
+<div class="text-3xl font-bold">
 Un rapport produit écrit par une IA, je ne le lis pas.
 </div>
 
 <div class="pt-4 text-5xl font-bold text-red-600">
 0 au rapport produit.
+</div>
+
+<img src="/medias/pangram.svg" alt="Pangram" class="h-12 mx-auto mt-14" />
+
+<div class="pt-4 italic op-75">
+«&nbsp;On n’a pas voulu prendre ce risque.&nbsp;»
+</div>
+<div class="pt-1 text-sm op-60">
+L’Académie Goncourt, septembre 2026. Moi non plus.
 </div>
 
 ---
@@ -241,14 +248,21 @@ layout: center
 class: text-center
 ---
 
-<img src="/medias/pangram.svg" alt="Pangram" class="h-24 mx-auto" />
-
-<div class="pt-10 text-3xl font-bold">
+<div class="text-3xl font-bold">
 Un rapport d’audit écrit par une IA, je ne le lis pas.
 </div>
 
 <div class="pt-4 text-5xl font-bold text-red-600">
 0 à l’audit.
+</div>
+
+<img src="/medias/pangram.svg" alt="Pangram" class="h-12 mx-auto mt-14" />
+
+<div class="pt-4 italic op-75">
+«&nbsp;On n’a pas voulu prendre ce risque.&nbsp;»
+</div>
+<div class="pt-1 text-sm op-60">
+L’Académie Goncourt, septembre 2026. Moi non plus.
 </div>
 
 ---
