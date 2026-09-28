@@ -39,7 +39,7 @@ Chaque TP est un projet autonome : `cd tpNN && npm install`.
 | 5 | L'authentification, suite : les présentations et le TP4 | [`tp04/`](./tp04) |
 | 6 | L'audit d'une vraie API | [`tp05/`](./tp05) |
 | **Sprint 3 : Fusion & QA** | | |
-| 7 | Connecter React à l'API | `tp07/` |
+| 7 | React, du composant à l'API | [`tp07/`](./tp07) |
 | 8 | Routage client | `tp08/` |
 | 9 | Tests automatisés | `tp09/` |
 | **Sprint 4 : DevOps & production** | | |
