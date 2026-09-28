@@ -281,14 +281,3 @@ Un rapport d’audit écrit par une IA, je ne le lis pas.
 <div class="pt-6 text-sm op-75">
 L’énoncé complet&nbsp;: <a href="https://github.com/gaetanmaisse/ismin-web-2026-tps/blob/main/projet/README.md" target="_blank"><code>projet/README.md</code></a>. Les dix briefs&nbsp;: <a href="https://github.com/gaetanmaisse/ismin-web-2026-tps/blob/main/projet/SUJETS.md" target="_blank"><code>projet/SUJETS.md</code></a>.
 </div>
-
----
-layout: center
-class: text-center
----
-
-# La règle d’or
-
-<div class="pt-6 text-xl">
-Ce que vous ne pouvez pas prouver par le repo ou par le thread<br/>ne compte pas.
-</div>
