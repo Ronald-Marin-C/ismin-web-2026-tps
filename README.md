@@ -47,6 +47,21 @@ Chaque TP est un projet autonome : `cd tpNN && npm install`.
 | 11 | CI/CD avec GitHub Actions | `tp11/` |
 | 12 | Déploiement cloud | `tp12/` |
 
+## 🎓 Le projet
+
+**Une application pour un client**, en binôme. C'est lui qui fait la note du cours.
+
+- 📄 **L'énoncé** : [`projet/README.md`](./projet/README.md), à lire en entier
+- 🏫 **Les dix sujets** : [`projet/SUJETS.md`](./projet/SUJETS.md), dix clients d'une école fictive
+- 💬 **Les fils des sujets** : les [Discussions](https://github.com/gaetanmaisse/ismin-web-2026-tps/discussions) du dépôt, pour prendre un sujet et poser vos questions au client
+- 📊 **Les slides** : https://gaetanmaisse.github.io/ismin-web-2026-tps/projet/
+
+| Date | Ce que vous rendez |
+|---|---|
+| **Vendredi 9 octobre** | Le cadrage, dans le fil de votre sujet |
+| **Dimanche 25 octobre, 23 h 59** | Le code et le rapport produit : un tag `v1.0` dans votre dépôt |
+| **Samedi 31 octobre, 23 h 59** | Le rapport d'audit, par mail |
+
 ## 🧵 Le fil rouge : ModelZoo
 
 Tous les TPs construisent la même application : **ModelZoo**, un catalogue de modèles d'IA : chercher, comparer, garder une shortlist. Vous commencez par une interface TypeScript en séance 1 et vous terminez avec une application full-stack déployée en production en séance 12.
