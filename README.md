@@ -40,8 +40,8 @@ Chaque TP est un projet autonome : `cd tpNN && npm install`.
 | 6 | L'audit d'une vraie API | [`tp05/`](./tp05) |
 | **Sprint 3 : Fusion & QA** | | |
 | 7 | React, du composant à l'API | [`tp07/`](./tp07) |
-| 8 | Routage client | `tp08/` |
-| 9 | Tests automatisés | `tp09/` |
+| 8 | Le routage : une application à plusieurs pages | [`tp08/`](./tp08) |
+| 9 | Formulaires et connexion | `tp09/` |
 | **Sprint 4 : DevOps & production** | | |
 | 10 | Docker | `tp10/` |
 | 11 | CI/CD avec GitHub Actions | `tp11/` |
