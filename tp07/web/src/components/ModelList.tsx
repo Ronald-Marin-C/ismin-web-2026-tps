@@ -1,4 +1,5 @@
 import type { Model } from '../model';
+import { ModelCard } from './ModelCard';
 
 interface ModelListProps {
   models: Model[];
@@ -9,5 +10,15 @@ interface ModelListProps {
  * and a key. No model: the text « Aucun modèle pour ce filtre. », not an empty list.
  */
 export const ModelList = ({ models }: ModelListProps) => {
-  return <p>TODO: {models.length} models</p>;
+  return (
+     models.length === 0 ? 
+      (<p>Aucun modèle pour ce filtre.</p>) :
+      (<ul className="model-list">
+        {models.map((model) => (
+          <li key = {model.id}>
+            <ModelCard model ={model} />
+         </li>
+        ))}
+      </ul>)
+      )
 };
