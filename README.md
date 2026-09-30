@@ -60,7 +60,7 @@ Chaque TP est un projet autonome : `cd tpNN && npm install`.
 |---|---|
 | **Vendredi 9 octobre** | Le cadrage, dans le fil de votre sujet |
 | **Dimanche 25 octobre, 23 h 59** | Le code et le rapport produit : un tag `v1.0` dans votre dépôt |
-| **Samedi 31 octobre, 23 h 59** | Le rapport d'audit, par mail |
+| **Dimanche 8 novembre, 23 h 59** | Le rapport d'audit, par mail |
 
 ## 🧵 Le fil rouge : ModelZoo
 

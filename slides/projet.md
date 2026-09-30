@@ -25,7 +25,7 @@ mdc: true
 
 ## Une application pour un client
 
-<div class="pt-4 op-75">En binôme. Le code et le rapport produit le 25 octobre, le rapport d’audit le 31 octobre</div>
+<div class="pt-4 op-75">En binôme. Le code et le rapport produit le 25 octobre, le rapport d’audit le 8 novembre</div>
 
 <div class="pt-10 text-sm op-75">
 📱 <b>gaetanmaisse.github.io/ismin-web-2026-tps/projet</b>
@@ -160,7 +160,7 @@ La note ne porte pas sur la quantité de code. Elle porte sur vos décisions, et
 |----------------------------------------|-----------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
 | **Ven. 9 octobre**                     | **Le cadrage**                    | Un commentaire dans le fil de votre sujet&nbsp;: le besoin compris, les trois fonctionnalités, ce que vous laissez de côté, le lien du repo |
 | **Dim. 25 octobre, 23&nbsp;h&nbsp;59** | **Le code et le rapport produit** | Le code sur `main`, qui démarre avec `docker compose up`, avec `RAPPORT.md` à la racine. C’est la version notée                             |
-| **Sam. 31 octobre, 23&nbsp;h&nbsp;59** | **Le rapport d’audit**            | Un fichier `AUDIT.md`, en pièce jointe d’un mail                                                                                            |
+| **Dim. 8 novembre, 23&nbsp;h&nbsp;59** | **Le rapport d’audit**            | Un fichier `AUDIT.md`, en pièce jointe d’un mail                                                                                            |
 
 </div>
 
