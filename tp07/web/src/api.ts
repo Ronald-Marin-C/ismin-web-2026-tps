@@ -9,5 +9,12 @@ export const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost:3000';
  * on its own.
  */
 export async function fetchModels(task?: Task): Promise<Model[]> {
-  throw new Error(`TODO: fetchModels(${task ?? ''})`);
+  const sansFiltre = `${API_URL}/models`;
+  const filtre = `${API_URL}/models?task=${task}`;
+  
+  const res = await fetch(task ? filtre : sansFiltre);
+  if(!res.ok){
+    throw new Error(`HTTP ${res.status}`);
+  }
+  return (await res.json());
 }
