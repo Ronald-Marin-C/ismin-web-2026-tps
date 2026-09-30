@@ -1,8 +1,8 @@
 import { ModelList } from "./components/ModelList";
 import { TaskFilter } from "./components/TaskFilter";
-import { MOCK_MODELS } from "./models.mock";
-import type { Task } from "./model";
-import { useState } from "react";
+import type { Model, Task } from "./model";
+import { useEffect, useState } from "react";
+import { fetchModels } from "./api";
 
 /**
  * The mockup: the page as a designer would hand it over, static HTML written
@@ -15,9 +15,13 @@ import { useState } from "react";
  *   step 6  MOCK_MODELS → the API
  */
 const App = () => {
+  const [models, setModels] = useState<Model[]>([]);
   const [task, setTask] = useState<Task | undefined>(undefined);
-  const visible = task ? MOCK_MODELS.filter((m) => m.task === task) : MOCK_MODELS
-
+  useEffect(() => {
+      const load = async () =>
+        setModels(await fetchModels(task));
+    load();
+  }, [task]);
 
   return (
     <main className="app">
@@ -28,8 +32,9 @@ const App = () => {
 
       <TaskFilter value={task} onChange={setTask} />
 
-      <ModelList models={visible} />
+      <ModelList models={models} />
     </main>
+    
   );
 };
 
