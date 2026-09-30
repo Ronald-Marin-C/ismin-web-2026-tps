@@ -22,6 +22,10 @@ async function bootstrap() {
     }),
   );
 
+  app.enableCors({
+    origin: process.env.WEB_ORIGIN
+  });
+
   // TODO (TP7, step 7): let the frontend call this API. Its origin is in WEB_ORIGIN.
   // app.enableCors();
 
