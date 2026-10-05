@@ -3,6 +3,7 @@ import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
 import './styles.css';
+import { BrowserRouter } from 'react-router';
 
 /** One client for the whole app: it holds the cache of every query. A failed request is retried once. */
 const queryClient = new QueryClient({
@@ -19,8 +20,12 @@ const queryClient = new QueryClient({
  */
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <QueryClientProvider client={queryClient}>
-      <App />
-    </QueryClientProvider>
+    
+    <BrowserRouter >
+      <QueryClientProvider client={queryClient}>
+        <App />
+      </QueryClientProvider>
+    </BrowserRouter>
+    
   </StrictMode>,
 );

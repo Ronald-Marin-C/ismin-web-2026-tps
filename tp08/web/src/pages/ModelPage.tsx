@@ -1,3 +1,10 @@
+import { useQuery } from "@tanstack/react-query";
+import { use } from "react";
+import { Form, Link, useParams } from "react-router";
+import { ApiError, fetchModel } from "../api";
+import { TASK_LABELS } from "../model";
+import { formatDownloads, formatParameters } from "../format";
+
 /**
  * The page of one model, at /models/:id.
  *
@@ -12,45 +19,61 @@
  *   - no licence: "Non précisée". No createdBy: no "Ajouté par" line
  */
 export const ModelPage = () => {
+  const {id} = useParams() as {id: string};
+  const {data: model, error, isPending, isError} = useQuery({
+    queryKey: ['model', id],
+    queryFn:() => fetchModel(id),
+  });
+
+
   return (
     <section className="page">
-      <a className="back" href="/">
+      <Link  className="back" to="/">
         ← Retour au catalogue
-      </a>
-
+      </Link>
+      {isPending && <p role ="status">Chargement...</p>}
+      {isError && <p role="alert">
+        {error instanceof ApiError && error.status == 404
+        ? 'Modèle introuvable.'
+          : `Impossible de charger le modèle : ${error.message}`}
+      </p>}
+      {model && 
+      
       <article className="detail">
         <header className="detail-header">
-          <h2 className="detail-title">Mistral-7B-Instruct-v0.3</h2>
-          <span className="badge">Génération de texte</span>
+          <h2 className="detail-title">{model.name}</h2>
+          <span className="badge">{TASK_LABELS[model.task]}</span>
         </header>
 
         <dl className="detail-fields">
           <div>
             <dt>Identifiant</dt>
-            <dd>mistral-7b-instruct-v0-3</dd>
+            <dd>{model.id}</dd>
           </div>
           <div>
             <dt>Organisation</dt>
-            <dd>mistralai</dd>
+            <dd>{model.org}</dd>
           </div>
           <div>
             <dt>Paramètres</dt>
-            <dd>7,25 milliards</dd>
+            <dd>{formatParameters(model.parameters)}</dd>
           </div>
           <div>
             <dt>Téléchargements</dt>
-            <dd>1 420 000</dd>
+            <dd>{formatDownloads(model.downloads)}</dd>
+
           </div>
           <div>
-            <dt>Licence</dt>
-            <dd>apache-2.0</dd>
+         
+            <dd>{model.license && <dt>Licence {model.license}</dt>}</dd>
           </div>
           <div>
-            <dt>Ajouté par</dt>
-            <dd>alice</dd>
+          
+            <dd>{model.createdBy && <dt>Ajouté par{model.createdBy}</dt>}</dd>
+
           </div>
         </dl>
-      </article>
+      </article>}
     </section>
   );
 };
