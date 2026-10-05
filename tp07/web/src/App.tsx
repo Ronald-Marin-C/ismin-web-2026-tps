@@ -15,26 +15,45 @@ import { fetchModels } from "./api";
  *   step 6  MOCK_MODELS → the API
  */
 const App = () => {
+  type Status = 'loading' | 'error' | 'ready';
+
+
   const [models, setModels] = useState<Model[]>([]);
+  const [status, setStatus] = useState<Status>('loading');
+  const [error, setError] = useState('');
+
+
   const [task, setTask] = useState<Task | undefined>(undefined);
   useEffect(() => {
-      const load = async () =>
-        setModels(await fetchModels(task));
-    load();
+    let ignore = false;        // la réponse est-elle périmée ?
+    setStatus('loading');
+    fetchModels(task)
+      .then((data) => {
+        if (ignore) return;
+        setModels(data);
+        setStatus('ready');
+      })
+      .catch((err: unknown) => {
+        if (ignore) return;
+        setError(err instanceof Error ? err.message : String(err));
+        setStatus('error');
+      });
+    return () => { ignore = true; };  // le nettoyage
   }, [task]);
 
   return (
     <main className="app">
-      <header className="app-header">
-        <h1 className="app-title">ModelZoo</h1>
-        <p className="app-tagline">Le catalogue des modèles d'IA</p>
-      </header>
+        <header className="app-header">
+          <h1 className="app-title">ModelZoo</h1>
+          <p className="app-tagline">Le catalogue des modèles d'IA</p>
+        </header>
 
-      <TaskFilter value={task} onChange={setTask} />
+       <TaskFilter value={task} onChange={setTask} />
+      {status === 'loading' && <p className="status" role="status">Chargement…</p>}
+      {status === 'error' && <p className="error" role="alert">{error}</p>}
+      {status === 'ready' && <ModelList models={models} />}
 
-      <ModelList models={models} />
     </main>
-    
   );
 };
 
