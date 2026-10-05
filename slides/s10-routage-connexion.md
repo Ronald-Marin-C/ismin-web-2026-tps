@@ -819,9 +819,9 @@ const login = async (username: string, password: string) => {
 
 ```ts
 // le navigateur range des chaînes, par clé
-localStorage.setItem('token', token);   // ranger
-localStorage.getItem('token');          // lire : string | null
-localStorage.removeItem('token');       // oublier
+localStorage.setItem(TOKEN_KEY, token);   // ranger
+localStorage.getItem(TOKEN_KEY);          // lire : string | null
+localStorage.removeItem(TOKEN_KEY);       // oublier
 ```
 
 ```tsx
@@ -832,7 +832,7 @@ const [token, setToken] = useState(
 ```
 
 <div class="pt-2 text-sm op-75">
-Pour le voir&nbsp;: F12, Application, Local Storage, <code>http://localhost:5173</code>. Une origine, un stockage.
+<code>TOKEN_KEY</code>, fourni dans <code>AuthProvider.tsx</code>, vaut <code>'token'</code>&nbsp;: le nom de la case. Pour la voir&nbsp;: F12, Application, Local Storage, <code>http://localhost:5173</code>. Une origine, un stockage.
 </div>
 
 </div>
@@ -1164,7 +1164,8 @@ Pendant l’envoi, le bouton est désactivé. Un double clic, sinon, c’est deu
 
 **La connexion**
 
-- le token dans `localStorage`, un choix assumé
+- `api.login` demande le token, le `login` du contexte le range
+- le token dans l’état **et** dans `localStorage`
 - le payload se lit, il ne prouve rien
 - `useAuth()` partout, grâce au contexte
 - `Authorization: Bearer`, et un `401` déconnecte
@@ -1188,6 +1189,7 @@ Pendant l’envoi, le bouton est désactivé. Un double clic, sinon, c’est deu
 
 - `value` et `onChange`&nbsp;: l’état décide
 - `onSubmit` sur le `<form>`, et `preventDefault()`
+- plusieurs champs&nbsp;: un objet, copié avec `{ ...draft }`
 - `method`, `Content-Type`, `JSON.stringify`
 - les erreurs de l’API, dans un `role="alert"`
 
