@@ -600,10 +600,10 @@ Entre guillemets, les accolades restent du texte. Des accolades, puis des backqu
 
 Pour y arriver&nbsp;:
 
-- un **formulaire** que React contrôle&nbsp;;
 - la **connexion**, et un token à garder&nbsp;;
 - le token **partagé** avec toute l’application&nbsp;;
 - une **page protégée**, qui renvoie vers la connexion&nbsp;;
+- un **formulaire** que React contrôle&nbsp;;
 - les **erreurs de l’API**, lisibles par un humain.
 
 </div>
@@ -614,139 +614,7 @@ Pour y arriver&nbsp;:
 layout: section
 ---
 
-# 4. Les formulaires
-
----
-
-# Le formulaire contrôlé
-
-<div class="grid grid-cols-5 gap-6 pt-2">
-<div class="col-span-3">
-
-```tsx
-const [username, setUsername] = useState('');
-
-<input
-  id="username"
-  value={username}
-  onChange={(e) => setUsername(e.target.value)}
-/>
-```
-
-<BrowserFrame url="localhost:5173/login">
-<label for="demo-username" style="display: block; font-size: 14px;">Identifiant</label>
-<input id="demo-username" value="alice" readonly style="margin-top: 4px; padding: 2px 6px; border: 1px solid #767676; border-radius: 3px; background: #fff; color: #000;" />
-</BrowserFrame>
-
-</div>
-<div class="col-span-2 text-sm">
-
-<v-clicks>
-
-- **La valeur du champ vient de l’état**, pas du navigateur. L’état React est la seule source de vérité.
-- Chaque touche&nbsp;: `onChange`, puis `setUsername`, puis un rendu, et le champ affiche la nouvelle valeur.
-- `value` sans `onChange`&nbsp;: le champ est figé, on ne peut plus rien taper. React le signale dans la console.
-- Un `<input type="number">` donne **une chaîne**&nbsp;: `Number(parameters)` avant de l’envoyer.
-
-</v-clicks>
-
-</div>
-</div>
-
----
-
-# Envoyer le formulaire
-
-<div class="grid grid-cols-5 gap-6 pt-2">
-<div class="col-span-3">
-
-```tsx
-import { type SubmitEvent } from 'react';
-
-const { login } = useAuth();    // celui du contexte
-const navigate = useNavigate();
-
-const handleSubmit = async (
-  event: SubmitEvent<HTMLFormElement>,
-) => {
-  event.preventDefault();       // pas de rechargement
-  try {
-    await login(username, password);
-    navigate('/', { replace: true });
-  } catch (err) {
-    setError(…);   // le 401 : « Les erreurs de l’API »
-  }
-};
-
-<form onSubmit={handleSubmit}>
-  {/* les champs */}
-  <button type="submit">Se connecter</button>
-</form>
-```
-
-</div>
-<div class="col-span-2 text-sm">
-
-<v-clicks>
-
-- **`onSubmit` sur le `<form>`**, pas `onClick` sur le bouton&nbsp;: la touche Entrée dans un champ envoie aussi le formulaire.
-- **`preventDefault()`**&nbsp;: sans lui, le navigateur fait ce qu’un formulaire HTML fait depuis 1995. Il met les champs dans l’adresse, mot de passe compris, et **recharge la page**.
-- `async`&nbsp;: on attend la réponse de l’API avant de changer de page.
-- `SubmitEvent`, importé de `react`. Les tutos écrivent encore `FormEvent`, marqué obsolète dans les types de React 19.
-
-</v-clicks>
-
-</div>
-</div>
-
----
-
-# Naviguer depuis le code
-
-<div class="grid grid-cols-2 gap-8 pt-2">
-<div>
-
-**Après une action**&nbsp;: `useNavigate`
-
-```tsx
-const navigate = useNavigate();
-
-// après l’ajout d’un modèle
-navigate(`/models/${created.id}`);
-
-// après la connexion, sans garder
-// /login dans l’historique
-navigate('/', { replace: true });
-```
-
-</div>
-<div>
-
-**Pendant le rendu**&nbsp;: `<Navigate />`
-
-```tsx
-if (!token) {
-  return <Navigate to="/login" replace />;
-}
-```
-
-<div class="pt-4 text-sm">
-
-Un `Link` attend un clic. `navigate()` s’appelle dans un gestionnaire d’événement. `<Navigate />` s’affiche, et redirige aussitôt.
-
-</div>
-
-<div class="pt-4 text-sm op-75">
-<code>replace</code>&nbsp;: la nouvelle adresse remplace l’ancienne dans l’historique. Le bouton retour ne ramène pas sur la page de connexion.
-</div>
-</div>
-</div>
-
----
-layout: section
----
-
-# 5. La connexion
+# 4. La connexion
 
 ---
 
@@ -948,6 +816,49 @@ Le même en-tête que dans Swagger ou Bruno, en séance 4&nbsp;: **`Authorizatio
 
 ---
 
+# Naviguer depuis le code
+
+<div class="grid grid-cols-2 gap-8 pt-2">
+<div>
+
+**Après une action**&nbsp;: `useNavigate`
+
+```tsx
+const navigate = useNavigate();
+
+// après l’ajout d’un modèle
+navigate(`/models/${created.id}`);
+
+// après la connexion, sans garder
+// /login dans l’historique
+navigate('/', { replace: true });
+```
+
+</div>
+<div>
+
+**Pendant le rendu**&nbsp;: `<Navigate />`
+
+```tsx
+if (!token) {
+  return <Navigate to="/login" replace />;
+}
+```
+
+<div class="pt-4 text-sm">
+
+Un `Link` attend un clic. `navigate()` s’appelle dans un gestionnaire d’événement. `<Navigate />` s’affiche, et redirige aussitôt.
+
+</div>
+
+<div class="pt-4 text-sm op-75">
+<code>replace</code>&nbsp;: la nouvelle adresse remplace l’ancienne dans l’historique. Le bouton retour ne ramène pas sur la page de connexion.
+</div>
+</div>
+</div>
+
+---
+
 # La page protégée
 
 <div class="grid grid-cols-2 gap-8 pt-2">
@@ -997,6 +908,95 @@ Le même en-tête que dans Swagger ou Bruno, en séance 4&nbsp;: **`Authorizatio
 </div>
 
 ---
+layout: section
+---
+
+# 5. Les formulaires
+
+---
+
+# Le formulaire contrôlé
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```tsx
+const [username, setUsername] = useState('');
+
+<input
+  id="username"
+  value={username}
+  onChange={(e) => setUsername(e.target.value)}
+/>
+```
+
+<BrowserFrame url="localhost:5173/login">
+<label for="demo-username" style="display: block; font-size: 14px;">Identifiant</label>
+<input id="demo-username" value="alice" readonly style="margin-top: 4px; padding: 2px 6px; border: 1px solid #767676; border-radius: 3px; background: #fff; color: #000;" />
+</BrowserFrame>
+
+</div>
+<div class="col-span-2 text-sm">
+
+<v-clicks>
+
+- **La valeur du champ vient de l’état**, pas du navigateur. L’état React est la seule source de vérité.
+- Chaque touche&nbsp;: `onChange`, puis `setUsername`, puis un rendu, et le champ affiche la nouvelle valeur.
+- `value` sans `onChange`&nbsp;: le champ est figé, on ne peut plus rien taper. React le signale dans la console.
+- Un `<input type="number">` donne **une chaîne**&nbsp;: `Number(parameters)` avant de l’envoyer.
+
+</v-clicks>
+
+</div>
+</div>
+
+---
+
+# Envoyer le formulaire
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```tsx
+import { type SubmitEvent } from 'react';
+
+const { login } = useAuth();    // celui du contexte
+const navigate = useNavigate();
+
+const handleSubmit = async (
+  event: SubmitEvent<HTMLFormElement>,
+) => {
+  event.preventDefault();       // pas de rechargement
+  try {
+    await login(username, password);
+    navigate('/', { replace: true });
+  } catch (err) {
+    setError(…);   // le 401 : « Les erreurs de l’API »
+  }
+};
+
+<form onSubmit={handleSubmit}>
+  {/* les champs */}
+  <button type="submit">Se connecter</button>
+</form>
+```
+
+</div>
+<div class="col-span-2 text-sm">
+
+<v-clicks>
+
+- **`onSubmit` sur le `<form>`**, pas `onClick` sur le bouton&nbsp;: la touche Entrée dans un champ envoie aussi le formulaire.
+- **`preventDefault()`**&nbsp;: sans lui, le navigateur fait ce qu’un formulaire HTML fait depuis 1995. Il met les champs dans l’adresse, mot de passe compris, et **recharge la page**.
+- `async`&nbsp;: on attend la réponse de l’API avant de changer de page.
+- `SubmitEvent`, importé de `react`. Les tutos écrivent encore `FormEvent`, marqué obsolète dans les types de React 19.
+
+</v-clicks>
+
+</div>
+</div>
+
+---
 
 # Les erreurs de l’API, dans le formulaire
 
@@ -1039,6 +1039,17 @@ Pendant l’envoi, le bouton est désactivé. Un double clic, sinon, c’est deu
 <div class="grid grid-cols-3 gap-4 pt-2 text-sm">
 <div class="p-4 border border-gray-500 border-opacity-30 rounded">
 
+**La connexion**
+
+- le token dans `localStorage`, un choix assumé
+- le payload se lit, il ne prouve rien
+- `useAuth()` partout, grâce au contexte
+- `Authorization: Bearer`, et un `401` déconnecte
+- le front cache, l’API interdit
+
+</div>
+<div class="p-4 border border-gray-500 border-opacity-30 rounded">
+
 **Naviguer**
 
 - `Link` pour un lien
@@ -1056,17 +1067,6 @@ Pendant l’envoi, le bouton est désactivé. Un double clic, sinon, c’est deu
 - `onSubmit` sur le `<form>`, et `preventDefault()`
 - `method`, `Content-Type`, `JSON.stringify`
 - les erreurs de l’API, dans un `role="alert"`
-
-</div>
-<div class="p-4 border border-gray-500 border-opacity-30 rounded">
-
-**La connexion**
-
-- le token dans `localStorage`, un choix assumé
-- le payload se lit, il ne prouve rien
-- `useAuth()` partout, grâce au contexte
-- `Authorization: Bearer`, et un `401` déconnecte
-- le front cache, l’API interdit
 
 </div>
 </div>
