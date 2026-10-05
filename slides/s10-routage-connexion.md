@@ -654,10 +654,6 @@ Par défaut, `fetch` fait un `GET`. Pour un `POST`, trois choses&nbsp;:
 <div class="pt-4 op-75">
 Les comptes de la base&nbsp;: <code>alice</code>, administratrice, et <code>bob</code>, simple utilisateur. Mot de passe <code>secret</code> pour les deux.
 </div>
-
-<div class="mt-3 p-3 bg-red-500 bg-opacity-10 rounded">
-<b>Deux <code>login</code>.</b> Celui d’<code>api.ts</code> demande le token&nbsp;; celui du contexte le range. Dans <code>AuthProvider</code>&nbsp;: <code>import * as api</code>, puis <code>api.login(…)</code>. Sinon, <code>login</code> s’appelle lui-même.
-</div>
 </div>
 </div>
 
@@ -747,7 +743,7 @@ const { user, logout } = useAuth();
 
 <div class="text-sm">
 
-**Le token vit à deux endroits.** Dans un état, pour que React redessine&nbsp;; dans `localStorage`, pour survivre au rechargement. `login` fait donc `localStorage.setItem`, **puis** `setToken`. Et `user` se calcule à chaque rendu&nbsp;: `decodePayload(token)`.
+`user` se calcule à chaque rendu, à partir du token&nbsp;: `decodePayload(token)`, ou `null`.
 
 </div>
 
@@ -772,6 +768,85 @@ C’est ce que font déjà `QueryClientProvider` et `BrowserRouter`&nbsp;: un pr
 <div class="pt-4 op-75">
 <code>AuthProvider.tsx</code> est fourni en squelette&nbsp;: vous écrivez <code>login</code>, <code>logout</code> et <code>user</code>, étape 2. Il utilise la syntaxe de React 19, <code>&lt;AuthContext value={…}&gt;</code>&nbsp;; les tutos écrivent encore <code>&lt;AuthContext.Provider&gt;</code>.
 </div>
+</div>
+</div>
+
+---
+
+# Deux fonctions `login`
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```ts
+// api.ts : parle à l’API
+export async function login(username: string, password: string) {
+  // … POST /auth/login
+  return body.access_token;           // renvoie le token
+}
+```
+
+```tsx
+// AuthProvider.tsx : garde l’utilisateur connecté
+import * as api from '../api';
+
+const login = async (username: string, password: string) => {
+  const token = await api.login(username, password);
+  // … puis le range, étape 2
+};
+```
+
+</div>
+<div class="col-span-2 text-sm">
+
+- **`api.login`** demande le token à l’API, et le **renvoie**. Il ne garde rien.
+- **Le `login` du contexte** appelle `api.login`, puis **range** le token. C’est lui que les pages appellent, avec `useAuth()`.
+
+<div class="mt-4 p-3 bg-red-500 bg-opacity-10 rounded">
+
+**Le piège.** Sans le préfixe `api.`, le `login` du contexte s’appelle lui-même, à l’infini&nbsp;: *Maximum call stack size exceeded*.
+
+</div>
+</div>
+</div>
+
+---
+
+# Le token, entre l’état et `localStorage`
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```ts
+// le navigateur range des chaînes, par clé
+localStorage.setItem('token', token);   // ranger
+localStorage.getItem('token');          // lire : string | null
+localStorage.removeItem('token');       // oublier
+```
+
+```tsx
+// AuthProvider : l’état part de localStorage
+const [token, setToken] = useState(
+  () => localStorage.getItem(TOKEN_KEY),
+);
+```
+
+<div class="pt-2 text-sm op-75">
+Pour le voir&nbsp;: F12, Application, Local Storage, <code>http://localhost:5173</code>. Une origine, un stockage.
+</div>
+
+</div>
+<div class="col-span-2 text-sm">
+
+<v-clicks>
+
+- **Deux endroits, deux rôles.** L’état&nbsp;: React redessine quand il change. `localStorage`&nbsp;: le token survit au rechargement.
+- `login` le range **dans les deux**, `logout` l’efface **des deux**. Changer seulement `localStorage` ne redessine rien.
+- `useState(() => …)`&nbsp;: une fonction, appelée une seule fois, au montage. Sans elle, la lecture se referait à chaque rendu.
+- Le squelette écrit `const [token] = useState(…)`&nbsp;: à vous d’ajouter `setToken`.
+
+</v-clicks>
+
 </div>
 </div>
 
@@ -877,6 +952,12 @@ Un `Link` attend un clic. `navigate()` s’appelle dans un gestionnaire d’év�
    le formulaire
 ```
 
+<div class="pt-3 text-sm">
+
+**`children`**&nbsp;: ce qu’on écrit entre `<RequireAuth>` et `</RequireAuth>`, ici `<NewModelPage />`. `RequireAuth` décide s’il l’affiche.
+
+</div>
+
 </div>
 <div class="text-sm">
 
@@ -891,7 +972,7 @@ Un `Link` attend un clic. `navigate()` s’appelle dans un gestionnaire d’év�
 <v-clicks>
 
 - Pas de token&nbsp;: `<Navigate />` vers `/login`, avec la page demandée dans `state`. `useLocation()` donne l’adresse actuelle.
-- Après la connexion, `LoginPage` lit `location.state` et y retourne.
+- Après la connexion, `LoginPage` lit `location.state?.from` et y retourne. `?.`&nbsp;: lire `from` seulement si `state` existe.
 
 </v-clicks>
 
@@ -990,6 +1071,48 @@ const handleSubmit = async (
 - **`preventDefault()`**&nbsp;: sans lui, le navigateur fait ce qu’un formulaire HTML fait depuis 1995. Il met les champs dans l’adresse, mot de passe compris, et **recharge la page**.
 - `async`&nbsp;: on attend la réponse de l’API avant de changer de page.
 - `SubmitEvent`, importé de `react`. Les tutos écrivent encore `FormEvent`, marqué obsolète dans les types de React 19.
+
+</v-clicks>
+
+</div>
+</div>
+
+---
+
+# Un formulaire à plusieurs champs
+
+<div class="grid grid-cols-5 gap-6 pt-2">
+<div class="col-span-3">
+
+```tsx
+interface Draft {
+  name: string;
+  task: Task;
+  parameters: string;   // un input donne une chaîne
+  // …
+}
+const [draft, setDraft] = useState<Draft>(EMPTY_DRAFT);
+
+<input
+  value={draft.name}
+  onChange={(e) => setDraft({ ...draft, name: e.target.value })}
+/>
+<select
+  value={draft.task}
+  onChange={(e) =>
+    setDraft({ ...draft, task: e.target.value as Task })}
+>
+```
+
+</div>
+<div class="col-span-2 text-sm">
+
+<v-clicks>
+
+- **Un objet, un seul état**, plutôt qu’un `useState` par champ.
+- `{ ...draft, name: … }`&nbsp;: une copie, avec un champ changé. Écrire `draft.name = …` modifie l’objet, mais React ne voit rien&nbsp;: même objet, pas de nouveau rendu.
+- Un `<select>` se contrôle comme un `<input>`. `e.target.value` est une `string`&nbsp;: `as Task` la promet au compilateur.
+- Pendant l’envoi&nbsp;: un état `submitting`, `disabled={submitting}` sur le bouton, remis à `false` dans le `finally`, que l’envoi réussisse ou non.
 
 </v-clicks>
 
