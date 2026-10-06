@@ -59,7 +59,15 @@ export async function fetchModel(id: string): Promise<Model> {
  * without it, NestJS does not read the body.
  */
 export async function login(username: string, password: string): Promise<string> {
-  throw new Error(`TODO step 2: POST /auth/login with ${JSON.stringify({ username, password })}`);
+  const res = await fetch(`${API_URL}/auth/login`, {
+    method: 'POST', 
+    headers:{'Content-type': 'application/json'},
+    body : JSON.stringify({ username, password }),
+  });
+
+  await throwIfNotOk(res);
+  const body = (await res.json()) as {access_token: string};
+  return body.access_token;
 }
 
 /**
