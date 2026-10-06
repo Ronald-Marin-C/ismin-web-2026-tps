@@ -1,0 +1,43 @@
+# The whole application, one command: docker compose up --build
+# Then http://localhost:8080
+#
+#   browser ──► web (nginx, port 8080) ──► /api/* ──► api (NestJS) ──► SQLite, in a volume
+
+services:
+  api:
+    build: ./api
+    environment:
+      # The database file lives in the volume below, not in the container.
+      DATABASE_URL: file:/data/modelzoo.db
+      # Read from the .env next to this file; compose refuses to start without it.
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in tp09/.env, see .env.example}
+      PORT: 3000
+    volumes:
+      - db-data:/data
+    restart: unless-stopped
+    # No `ports`: only `web` reaches the API, through the compose network.
+
+  web:
+    build: ./web
+    ports:
+      # host:container. The only door open to the outside.
+      - '${WEB_PORT:-8080}:80'
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  # Optional: a public https URL, through a free Cloudflare quick tunnel.
+  # Started only on demand: docker compose --profile tunnel up -d
+  # The URL is in its logs:  docker compose logs tunnel
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    # http2 (TCP) rather than the default quic (UDP), which many networks block.
+    command: tunnel --no-autoupdate --protocol http2 --url http://web:80
+    profiles:
+      - tunnel
+    depends_on:
+      - web
+
+volumes:
+  # Survives `docker compose down`; `docker compose down -v` deletes it.
+  db-data:

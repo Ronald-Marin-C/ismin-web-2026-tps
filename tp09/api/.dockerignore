@@ -1,0 +1,9 @@
+# Never sent to the Docker build: rebuilt inside the image, or local only.
+node_modules
+dist
+src/generated
+.env
+*.db
+*.db-journal
+*.tsbuildinfo
+.vscode
